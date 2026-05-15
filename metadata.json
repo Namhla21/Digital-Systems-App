@@ -1,0 +1,6 @@
+{
+  "name": "Living Hope Management System",
+  "description": "A client management system for Living Hope, featuring HCT and LSE program tracking, user roles, and an admin dashboard with Excel export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

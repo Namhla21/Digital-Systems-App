@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System user with role-based access",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin", "staff"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "HCTRecord": {
+      "title": "HCT Record",
+      "description": "HIV Counseling and Testing record",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "surname": { "type": "string" },
+        "dob": { "type": "string", "format": "date" },
+        "age": { "type": "number" },
+        "sex": { "type": "string", "enum": ["Male", "Female", "Other"] },
+        "facility": { "type": "string" },
+        "results": { "type": "string", "enum": ["Positive", "Negative"] },
+        "tbTest": { "type": "string", "enum": ["YES", "NO"] },
+        "condomsIssued": { "type": "number" },
+        "hivCounselling": { "type": "string", "enum": ["YES", "NO"] },
+        "arvCounselling": { "type": "string", "enum": ["YES", "NO"] },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "surname", "results", "createdBy"]
+    },
+    "LSERecord": {
+      "title": "LSE Record",
+      "description": "Life Skills Education record",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "surname": { "type": "string" },
+        "dob": { "type": "string", "format": "date" },
+        "age": { "type": "number" },
+        "address": { "type": "string" },
+        "grade": { "type": "string" },
+        "clubOption": { "type": "string", "enum": ["Holiday", "Afternoon"] },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "surname", "clubOption", "createdBy"]
+    },
+    "HCCRecord": {
+      "title": "HCC Record",
+      "description": "HCC program record",
+      "type": "object",
+      "properties": {
+        "ui": { "type": "string" },
+        "folderNo": { "type": "string" },
+        "chronologicalNo": { "type": "string" },
+        "govNo": { "type": "string" },
+        "name": { "type": "string" },
+        "surname": { "type": "string" },
+        "fullName": { "type": "string" },
+        "address": { "type": "string" },
+        "suburb": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "phone1": { "type": "string" },
+        "phone2": { "type": "string" },
+        "idNumber": { "type": "string" },
+        "dob": { "type": "string", "format": "date" },
+        "age": { "type": "number" },
+        "gender": { "type": "string", "enum": ["Male", "Female", "Other"] },
+        "race": { "type": "string" },
+        "admissionDate": { "type": "string", "format": "date" },
+        "admissions": { "type": "string" },
+        "admissionFrom": { "type": "string" },
+        "lhDoctor": { "type": "string" },
+        "woundsArrival": { "type": "string", "enum": ["Yes", "No"] },
+        "arv": { "type": "string", "enum": ["Yes", "No"] },
+        "tb": { "type": "string", "enum": ["Yes", "No"] },
+        "nappy": { "type": "string", "enum": ["Yes", "No"] },
+        "category": { "type": "string" },
+        "treatment": { "type": "string" },
+        "status": { "type": "string", "enum": ["In-patient", "Discharged", "Deceased"] },
+        "diagnosis": { "type": "string" },
+        "stLukes": { "type": "string", "enum": ["Yes", "No"] },
+        "stLukesDate": { "type": "string", "format": "date" },
+        "dischargeDate": { "type": "string", "format": "date" },
+        "woundsDischarge": { "type": "string", "enum": ["Yes", "No"] },
+        "dischargeTo": { "type": "string" },
+        "hbc": { "type": "string", "enum": ["Yes", "No"] },
+        "medicalAid": { "type": "string", "enum": ["Yes", "No"] },
+        "daysIpu": { "type": "number" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "surname", "createdBy"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile and roles"
+    },
+    "/hct_records/{recordId}": {
+      "schema": "HCTRecord",
+      "description": "HCT program records"
+    },
+    "/lse_records/{recordId}": {
+      "schema": "LSERecord",
+      "description": "LSE program records"
+    },
+    "/hcc_records/{recordId}": {
+      "schema": "HCCRecord",
+      "description": "HCC program records"
+    }
+  }
+}

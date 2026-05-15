@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        getUserData().role == 'admin' || 
+        request.auth.token.email.lower() == "retabileyakhe078@gmail.com"
+      );
+    }
+
+    function isStaff() {
+      return isAuthenticated() && (getUserData().role == 'staff' || isAdmin());
+    }
+
+    // ===============================================================
+    // Validation Functions
+    // ===============================================================
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'role']) &&
+             data.uid is string &&
+             data.email is string &&
+             data.role in ['admin', 'staff'];
+    }
+
+    function isValidHCT(data) {
+      return data.keys().hasAll(['name', 'surname', 'results', 'createdBy']) &&
+             data.name is string && data.name.size() < 100 &&
+             data.surname is string && data.surname.size() < 100 &&
+             data.results in ['Positive', 'Negative'] &&
+             data.createdBy == request.auth.uid;
+    }
+
+    function isValidLSE(data) {
+      return data.keys().hasAll(['name', 'surname', 'clubOption', 'createdBy']) &&
+             data.name is string && data.name.size() < 100 &&
+             data.surname is string && data.surname.size() < 100 &&
+             data.clubOption in ['Holiday', 'Afternoon'] &&
+             data.createdBy == request.auth.uid;
+    }
+
+    function isValidHCC(data) {
+      return data.keys().hasAll(['name', 'surname', 'createdBy']) &&
+             data.name is string && data.name.size() < 100 &&
+             data.surname is string && data.surname.size() < 100 &&
+             data.createdBy == request.auth.uid;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isValidUser(request.resource.data) && 
+                    (isOwner(userId) || isAdmin());
+      allow update: if (isAdmin() || (isOwner(userId) && request.auth.token.email.lower() == "retabileyakhe078@gmail.com")) && 
+                    isValidUser(request.resource.data);
+    }
+
+    match /hct_records/{recordId} {
+      allow read: if isAdmin();
+      allow create: if isStaff() && isValidHCT(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /lse_records/{recordId} {
+      allow read: if isAdmin();
+      allow create: if isStaff() && isValidLSE(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+
+    match /hcc_records/{recordId} {
+      allow read: if isAdmin();
+      allow create: if isStaff() && isValidHCC(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+  }
+}
